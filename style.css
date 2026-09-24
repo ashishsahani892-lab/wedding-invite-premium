@@ -1,65 +1,311 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI';
-  background: #111;
-  color: white;
-  text-align: center;
+/* =========================
+   OPEN WEDDING INVITATION
+========================= */
+
+const openButton = document.getElementById("openInvitation");
+
+const openingScreen = document.getElementById("opening");
+
+const invitation = document.getElementById("invitation");
+
+
+openButton.addEventListener("click", function () {
+
+    // Hide opening screen
+    openingScreen.style.opacity = "0";
+
+    openingScreen.style.transform = "scale(1.1)";
+
+    openingScreen.style.transition =
+        "all 1s ease";
+
+
+    // Small delay before showing invitation
+    setTimeout(function () {
+
+        openingScreen.style.display = "none";
+
+        invitation.classList.remove("hidden");
+
+        window.scrollTo(0, 0);
+
+        startCelebration();
+
+        revealAnimations();
+
+    }, 900);
+
+});
+
+
+/* =========================
+   WEDDING COUNTDOWN
+========================= */
+
+/*
+   Wedding Date:
+   25 November 2026
+   6:00 PM
+   India Time
+*/
+
+const weddingDate =
+    new Date("2026-11-25T18:00:00+05:30").getTime();
+
+
+function updateCountdown() {
+
+    const now = new Date().getTime();
+
+    const difference =
+        weddingDate - now;
+
+
+    // Wedding date has arrived
+    if (difference <= 0) {
+
+        document.getElementById("days").innerText = "00";
+
+        document.getElementById("hours").innerText = "00";
+
+        document.getElementById("minutes").innerText = "00";
+
+        document.getElementById("seconds").innerText = "00";
+
+        return;
+
+    }
+
+
+    const days =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+
+    const hours =
+        Math.floor(
+            (difference /
+                (1000 * 60 * 60)) % 24
+        );
+
+
+    const minutes =
+        Math.floor(
+            (difference /
+                (1000 * 60)) % 60
+        );
+
+
+    const seconds =
+        Math.floor(
+            (difference / 1000) % 60
+        );
+
+
+    document.getElementById("days").innerText =
+        String(days).padStart(2, "0");
+
+
+    document.getElementById("hours").innerText =
+        String(hours).padStart(2, "0");
+
+
+    document.getElementById("minutes").innerText =
+        String(minutes).padStart(2, "0");
+
+
+    document.getElementById("seconds").innerText =
+        String(seconds).padStart(2, "0");
+
 }
 
-.overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+updateCountdown();
+
+setInterval(updateCountdown, 1000);
+
+
+/* =========================
+   SCROLL ANIMATION
+========================= */
+
+function revealAnimations() {
+
+    const elements =
+        document.querySelectorAll(
+            ".event-card, .section, .contact-section"
+        );
+
+
+    const observer =
+        new IntersectionObserver(
+
+            function (entries) {
+
+                entries.forEach(function (entry) {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.style.opacity = "1";
+
+                        entry.target.style.transform =
+                            "translateY(0)";
+
+                    }
+
+                });
+
+            },
+
+            {
+                threshold: 0.15
+            }
+
+        );
+
+
+    elements.forEach(function (element) {
+
+        element.style.opacity = "0";
+
+        element.style.transform =
+            "translateY(40px)";
+
+        element.style.transition =
+            "all 1s ease";
+
+        observer.observe(element);
+
+    });
+
 }
 
-button {
-  padding: 15px 25px;
-  font-size: 18px;
-  background: gold;
-  border: none;
-  border-radius: 10px;
+
+/* =========================
+   CELEBRATION EFFECT
+========================= */
+
+function startCelebration() {
+
+    for (let i = 0; i < 35; i++) {
+
+        createPetal();
+
+    }
+
 }
 
-.hidden { display: none; }
 
-.hero {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: linear-gradient(to right, #ff4e50, #f9d423);
+function createPetal() {
+
+    const petal =
+        document.createElement("div");
+
+
+    petal.innerHTML = "✦";
+
+
+    petal.style.position =
+        "fixed";
+
+
+    petal.style.top =
+        "-20px";
+
+
+    petal.style.left =
+        Math.random() * 100 + "vw";
+
+
+    petal.style.color =
+        Math.random() > 0.5
+        ? "#d8aa58"
+        : "#e7a6a6";
+
+
+    petal.style.fontSize =
+        (8 + Math.random() * 15) + "px";
+
+
+    petal.style.zIndex =
+        "999";
+
+
+    petal.style.pointerEvents =
+        "none";
+
+
+    const duration =
+        3 + Math.random() * 4;
+
+
+    petal.style.animation =
+        `fallPetal ${duration}s linear`;
+
+
+    document.body.appendChild(petal);
+
+
+    setTimeout(function () {
+
+        petal.remove();
+
+    }, duration * 1000);
+
 }
 
-.section {
-  padding: 50px 20px;
+
+/* =========================
+   PETAL ANIMATION
+========================= */
+
+const style =
+    document.createElement("style");
+
+
+style.innerHTML = `
+
+@keyframes fallPetal {
+
+    0% {
+
+        transform:
+            translateY(-20px)
+            rotate(0deg);
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        transform:
+            translateY(110vh)
+            rotate(360deg);
+
+        opacity: 0;
+
+    }
+
 }
 
-.card {
-  background: rgba(255,255,255,0.1);
-  margin: 20px;
-  padding: 20px;
-  border-radius: 15px;
-}
+`;
 
-.gallery img {
-  width: 80%;
-  margin: 10px;
-  border-radius: 10px;
-}
 
-.rsvp {
-  display: inline-block;
-  padding: 15px;
-  background: green;
-  color: white;
-  text-decoration: none;
-  border-radius: 10px;
-}
+document.head.appendChild(style);
 
-#countdown {
-  font-size: 24px;
-}
+
+/* =========================
+   PREVENT BROKEN COUNTDOWN
+========================= */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        updateCountdown();
+
+    }
+);
