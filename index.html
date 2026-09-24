@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Invite</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Entry Screen -->
+<div class="overlay">
+  <button onclick="startExperience()">💌 Open Invitation</button>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mp3">
+</audio>
+
+<div id="main" class="hidden">
+
+  <section class="hero">
+    <h1>💍 Rahul ❤️ Priya</h1>
+    <p>Are Getting Married</p>
+  </section>
+
+  <!-- Countdown -->
+  <section class="section">
+    <h2>Wedding Countdown</h2>
+    <div id="countdown"></div>
+  </section>
+
+  <!-- Events -->
+  <section class="section">
+    <h2>Events</h2>
+
+    <div class="card">
+      <h3>Wedding</h3>
+      <p>📅 20 Feb 2027</p>
+      <p>⏰ 7 PM</p>
+      <a href="https://maps.google.com" target="_blank">📍 View Location</a>
+    </div>
+
+    <div class="card">
+      <h3>Reception</h3>
+      <p>📅 21 Feb 2027</p>
+      <p>⏰ 8 PM</p>
+    </div>
+
+  </section>
+
+  <!-- Gallery -->
+  <section class="section">
+    <h2>Our Moments ❤️</h2>
+    <div class="gallery">
+      <img src="photos/pic1.jpg">
+      <img src="photos/pic2.jpg">
+      <img src="photos/pic3.jpg">
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="section">
+    <h2>Join Us</h2>
+    <a class="rsvp" href="https://wa.me/919999999999">RSVP on WhatsApp</a>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
