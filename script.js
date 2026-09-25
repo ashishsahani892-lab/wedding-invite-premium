@@ -125,7 +125,7 @@ body {
 
   font-size: clamp(40px, 11vw, 75px);
 
-  margin: 15px 0;
+  margin: 15px 0 5px;
 
   animation: scaleIn 1.5s ease;
 
@@ -137,6 +137,18 @@ body {
   color: #efaaaa;
 
   font-size: 35px;
+
+}
+
+.family-name {
+
+  color: #cdaea0;
+
+  letter-spacing: 2px;
+
+  font-size: 13px;
+
+  margin-bottom: 15px;
 
 }
 
@@ -200,6 +212,8 @@ body {
   position: relative;
 
   z-index: 5;
+
+  animation: pulseGlow 2.4s ease-in-out infinite;
 
 }
 
@@ -299,6 +313,8 @@ body {
 
   margin-bottom: 10px;
 
+  animation: fadeDown 1.8s ease;
+
 }
 
 
@@ -322,6 +338,10 @@ body {
   font-size: 38px;
 
   margin: 5px;
+
+  display: inline-block;
+
+  animation: heartBeat 1.6s ease-in-out infinite;
 
 }
 
@@ -535,10 +555,12 @@ body {
 
 
 /* =========================
-   MAP BUTTON
+   MAP / CALENDAR / SHARE BUTTONS
 ========================= */
 
-.map-button {
+.map-button,
+.calendar-button,
+.share-button {
 
   display: inline-block;
 
@@ -557,9 +579,52 @@ body {
 
   border-radius: 30px;
 
-  margin-top: 20px;
+  margin: 8px 6px 0;
 
   font-weight: bold;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  border: none;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+}
+
+.map-button:hover,
+.calendar-button:hover,
+.share-button:hover {
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+.calendar-button {
+
+  background:
+    linear-gradient(
+      135deg,
+      #f5d99b,
+      #d8aa58
+    );
+
+}
+
+.button-row {
+
+  display: flex;
+
+  justify-content: center;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
 
 }
 
@@ -637,6 +702,17 @@ body {
 .time-box small {
 
   font-size: 12px;
+
+}
+
+
+.countdown-arrived {
+
+  font-size: 20px;
+
+  font-weight: bold;
+
+  color: var(--maroon);
 
 }
 
@@ -731,6 +807,8 @@ body {
 
   font-weight: bold;
 
+  margin: 6px;
+
 }
 
 
@@ -756,6 +834,65 @@ footer h4 {
   font-size: 24px;
 
   margin: 15px;
+
+}
+
+footer .family-line {
+
+  color: #cdaea0;
+
+  font-size: 13px;
+
+  margin-top: -8px;
+
+  margin-bottom: 15px;
+
+}
+
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 30px;
+
+  transform: translate(-50%, 20px);
+
+  background: var(--light-gold);
+
+  color: #2a050d;
+
+  padding: 12px 22px;
+
+  border-radius: 30px;
+
+  font-weight: bold;
+
+  font-size: 14px;
+
+  opacity: 0;
+
+  transition: 0.35s ease;
+
+  z-index: 9999;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+
+  pointer-events: none;
+
+}
+
+.toast.show {
+
+  opacity: 1;
+
+  transform: translate(-50%, 0);
 
 }
 
@@ -840,6 +977,31 @@ footer h4 {
     transform: rotate(360deg);
 
   }
+
+}
+
+@keyframes pulseGlow {
+
+  0%, 100% {
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 0 rgba(216,170,88,0.45);
+
+  }
+
+  50% {
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 12px rgba(216,170,88,0);
+
+  }
+
+}
+
+@keyframes heartBeat {
+
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.15); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.1); }
 
 }
 
