@@ -1,1039 +1,350 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:root {
-  --maroon: #5a0b20;
-  --dark-maroon: #26030d;
-  --gold: #d8aa58;
-  --light-gold: #f5d99b;
-  --cream: #fff8ea;
-  --pink: #e7a6a6;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background: var(--dark-maroon);
-  color: var(--cream);
-  font-family: "Noto Serif Devanagari", serif;
-  overflow-x: hidden;
-}
-
 /* =========================
-   OPENING SCREEN
+   OPEN WEDDING INVITATION
 ========================= */
 
-#opening {
-  min-height: 100vh;
-  min-height: 100svh;
+const openButton = document.getElementById("openInvitation");
+const openingScreen = document.getElementById("opening");
+const invitation = document.getElementById("invitation");
 
-  display: flex;
-  flex-direction: column;
+openButton.addEventListener("click", function () {
 
-  justify-content: center;
-  align-items: center;
+  // Hide opening screen
+  openingScreen.style.opacity = "0";
+  openingScreen.style.transform = "scale(1.1)";
+  openingScreen.style.transition = "all 1s ease";
 
-  text-align: center;
+  // Small delay before showing invitation
+  setTimeout(function () {
 
-  padding: 25px;
+    openingScreen.style.display = "none";
+    invitation.classList.remove("hidden");
 
-  position: relative;
+    window.scrollTo(0, 0);
 
-  overflow: hidden;
+    startCelebration();
+    startAmbientPetals();
+    revealAnimations();
 
-  background:
-    radial-gradient(
-      circle at center,
-      #7b1835 0%,
-      #4a091b 45%,
-      #21020a 100%
-    );
-}
+  }, 900);
 
-
-/* Decorative circles */
-
-#opening::before,
-#opening::after {
-
-  content: "";
-
-  position: absolute;
-
-  width: 75vw;
-  height: 75vw;
-
-  max-width: 650px;
-  max-height: 650px;
-
-  border-radius: 50%;
-
-  border: 1px solid rgba(216,170,88,0.35);
-
-  animation: rotateDecoration 20s linear infinite;
-}
-
-#opening::after {
-
-  width: 60vw;
-  height: 60vw;
-
-  border-color: rgba(216,170,88,0.2);
-
-  animation-direction: reverse;
-}
+});
 
 
 /* =========================
-   TEXT
+   WEDDING COUNTDOWN
 ========================= */
 
-.small-title {
+/*
+   Wedding Date:
+   25 November 2026
+   6:00 PM India Time
+*/
 
-  color: var(--gold);
+const weddingDate = new Date("2026-11-25T18:00:00+05:30").getTime();
 
-  letter-spacing: 3px;
+let hasArrived = false;
 
-  font-size: 14px;
+function updateCountdown() {
 
-  margin-bottom: 15px;
+  const now = new Date().getTime();
+  const difference = weddingDate - now;
 
-}
+  // Wedding moment has arrived
+  if (difference <= 0) {
 
+    document.getElementById("days").innerText = "00";
+    document.getElementById("hours").innerText = "00";
+    document.getElementById("minutes").innerText = "00";
+    document.getElementById("seconds").innerText = "00";
 
-#opening h1 {
+    if (!hasArrived) {
+      hasArrived = true;
+      const countdownBox = document.querySelector(".countdown");
+      if (countdownBox) {
+        countdownBox.outerHTML =
+          '<p class="countdown-arrived">🎉 शुभ मुहूर्त आ गया है! 🎉</p>';
+      }
+      startCelebration();
+    }
 
-  font-size: clamp(42px, 12vw, 80px);
+    return;
+  }
 
-  margin: 10px;
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((difference / (1000 * 60)) % 60);
+  const seconds = Math.floor((difference / 1000) % 60);
 
-  color: var(--light-gold);
-
-  animation: fadeDown 1.5s ease;
-
-}
-
-
-.couple-name {
-
-  font-family: Georgia, serif;
-
-  font-size: clamp(40px, 11vw, 75px);
-
-  margin: 15px 0 5px;
-
-  animation: scaleIn 1.5s ease;
-
-}
-
-
-.couple-name span {
-
-  color: #efaaaa;
-
-  font-size: 35px;
-
-}
-
-.family-name {
-
-  color: #cdaea0;
-
-  letter-spacing: 2px;
-
-  font-size: 13px;
-
-  margin-bottom: 15px;
+  document.getElementById("days").innerText = String(days).padStart(2, "0");
+  document.getElementById("hours").innerText = String(hours).padStart(2, "0");
+  document.getElementById("minutes").innerText = String(minutes).padStart(2, "0");
+  document.getElementById("seconds").innerText = String(seconds).padStart(2, "0");
 
 }
 
-
-.opening-text {
-
-  color: #ead2c2;
-
-  font-size: 16px;
-
-  margin-bottom: 20px;
-
-}
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
 
-.blessing {
+/* =========================
+   SCROLL ANIMATION
+========================= */
 
-  color: #cdaea0;
+function revealAnimations() {
 
-  font-size: 12px;
+  const elements = document.querySelectorAll(
+    ".event-card, .section, .contact-section"
+  );
+
+  const observer = new IntersectionObserver(
+    function (entries) {
+
+      entries.forEach(function (entry) {
+
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+
+      });
+
+    },
+    { threshold: 0.15 }
+  );
+
+  elements.forEach(function (element) {
+
+    element.style.opacity = "0";
+    element.style.transform = "translateY(40px)";
+    element.style.transition = "all 1s ease";
+
+    observer.observe(element);
+
+  });
 
 }
 
 
 /* =========================
-   OPEN BUTTON
+   CELEBRATION EFFECT (burst)
 ========================= */
 
-#openInvitation {
+function startCelebration() {
 
-  border: 1px solid var(--gold);
-
-  background:
-    linear-gradient(
-      135deg,
-      #e2b761,
-      #9e6e2b
-    );
-
-  color: #2b050e;
-
-  padding: 15px 28px;
-
-  border-radius: 50px;
-
-  font-family: inherit;
-
-  font-size: 16px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  margin: 20px 0;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.35);
-
-  transition: 0.3s;
-
-  position: relative;
-
-  z-index: 5;
-
-  animation: pulseGlow 2.4s ease-in-out infinite;
+  for (let i = 0; i < 35; i++) {
+    createPetal();
+  }
 
 }
 
 
-#openInvitation:hover {
+function createPetal() {
 
-  transform: scale(1.05);
+  const petal = document.createElement("div");
+
+  petal.innerHTML = Math.random() > 0.7 ? "❀" : "✦";
+
+  petal.style.position = "fixed";
+  petal.style.top = "-20px";
+  petal.style.left = Math.random() * 100 + "vw";
+
+  petal.style.color =
+    Math.random() > 0.5 ? "#d8aa58" : "#e7a6a6";
+
+  petal.style.fontSize = (8 + Math.random() * 15) + "px";
+  petal.style.zIndex = "999";
+  petal.style.pointerEvents = "none";
+
+  const duration = 3 + Math.random() * 4;
+
+  petal.style.animation = `fallPetal ${duration}s linear`;
+
+  document.body.appendChild(petal);
+
+  setTimeout(function () {
+    petal.remove();
+  }, duration * 1000);
 
 }
 
 
 /* =========================
-   MAIN
+   AMBIENT PETALS (continuous, gentle)
 ========================= */
 
-.hidden {
-  display: none;
-}
+let ambientInterval = null;
 
+function startAmbientPetals() {
 
-/* =========================
-   HERO
-========================= */
+  if (ambientInterval) return;
 
-.hero {
-
-  min-height: 100vh;
-  min-height: 100svh;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  text-align: center;
-
-  position: relative;
-
-  overflow: hidden;
-
-  background:
-    radial-gradient(
-      circle at center,
-      #84203e,
-      #4b0a1d 50%,
-      #21020a
-    );
+  ambientInterval = setInterval(function () {
+    createPetal();
+  }, 2600);
 
 }
 
+// Pause the ambient effect when the tab isn't visible, to be kind to battery
+document.addEventListener("visibilitychange", function () {
 
-.hero::before {
+  if (document.hidden) {
 
-  content: "";
+    if (ambientInterval) {
+      clearInterval(ambientInterval);
+      ambientInterval = null;
+    }
 
-  position: absolute;
+  } else if (!invitation.classList.contains("hidden")) {
 
-  width: 70vw;
-  height: 70vw;
-
-  max-width: 650px;
-  max-height: 650px;
-
-  border-radius: 50%;
-
-  border: 1px solid rgba(216,170,88,0.35);
-
-  box-shadow:
-    0 0 0 35px rgba(216,170,88,0.04),
-    0 0 0 70px rgba(216,170,88,0.03);
-
-  animation:
-    rotateDecoration 30s linear infinite;
-
-}
-
-
-.hero-content {
-
-  position: relative;
-
-  z-index: 2;
-
-  padding: 30px;
-
-  animation: heroAppear 2s ease;
-
-}
-
-
-.om {
-
-  font-size: 45px;
-
-  color: var(--gold);
-
-  margin-bottom: 10px;
-
-  animation: fadeDown 1.8s ease;
-
-}
-
-
-.hero h2 {
-
-  font-family: Georgia, serif;
-
-  font-size: clamp(55px, 15vw, 100px);
-
-  margin: 5px 0;
-
-  color: white;
-
-}
-
-
-.heart {
-
-  color: #efa5a5;
-
-  font-size: 38px;
-
-  margin: 5px;
-
-  display: inline-block;
-
-  animation: heartBeat 1.6s ease-in-out infinite;
-
-}
-
-
-.hero-message {
-
-  color: #e7cfc0;
-
-  font-size: 17px;
-
-  margin: 15px 0;
-
-}
-
-
-.date-box {
-
-  display: inline-block;
-
-  padding: 12px 20px;
-
-  border:
-
-    1px solid
-
-    rgba(216,170,88,0.65);
-
-  border-radius: 50px;
-
-  color: var(--light-gold);
-
-  line-height: 1.7;
-
-}
-
-
-/* =========================
-   COMMON SECTIONS
-========================= */
-
-.section {
-
-  max-width: 850px;
-
-  margin: auto;
-
-  padding: 80px 25px;
-
-  text-align: center;
-
-}
-
-
-.section p {
-
-  line-height: 2;
-
-}
-
-
-.section h3,
-.event-section h3,
-.contact-section h3 {
-
-  font-family: Georgia, serif;
-
-  font-size: 35px;
-
-  margin: 10px 0 30px;
-
-  color: white;
-
-}
-
-
-.ornament {
-
-  color: var(--gold);
-
-  font-size: 25px;
-
-  margin: 20px;
-
-}
-
-
-/* =========================
-   INVITATION MESSAGE
-========================= */
-
-.invitation-message {
-
-  background:
-    linear-gradient(
-      #35050f,
-      #5a0c22
-    );
-
-}
-
-
-.invitation-message strong {
-
-  color: var(--light-gold);
-
-}
-
-
-/* =========================
-   EVENTS
-========================= */
-
-.event-section {
-
-  text-align: center;
-
-  padding: 80px 20px;
-
-  background:
-    radial-gradient(
-      circle at center,
-      #65112a,
-      #35050f
-    );
-
-}
-
-
-.event-card {
-
-  max-width: 480px;
-
-  margin: 30px auto;
-
-  padding: 35px 25px;
-
-  border-radius: 28px;
-
-  background: rgba(255,255,255,0.06);
-
-  border:
-    1px solid
-    rgba(216,170,88,0.35);
-
-  box-shadow:
-    0 20px 50px rgba(0,0,0,0.25);
-
-}
-
-
-.event-icon {
-
-  color: var(--gold);
-
-  font-size: 40px;
-
-  margin-bottom: 10px;
-
-}
-
-
-.event-card h4 {
-
-  font-size: 27px;
-
-  margin: 10px;
-
-}
-
-
-.event-date {
-
-  color: var(--gold);
-
-  font-size: 20px;
-
-  font-weight: bold;
-
-}
-
-
-.event-time {
-
-  font-size: 18px;
-
-}
-
-
-.gold-line {
-
-  width: 100px;
-
-  height: 1px;
-
-  background: var(--gold);
-
-  margin: 20px auto;
-
-}
-
-
-.venue-title {
-
-  color: var(--light-gold);
-
-  font-size: 20px;
-
-  font-weight: bold;
-
-}
-
-
-/* =========================
-   MAP / CALENDAR / SHARE BUTTONS
-========================= */
-
-.map-button,
-.calendar-button,
-.share-button {
-
-  display: inline-block;
-
-  text-decoration: none;
-
-  color: #2a050d;
-
-  background:
-    linear-gradient(
-      135deg,
-      #e5bd70,
-      #a97731
-    );
-
-  padding: 12px 22px;
-
-  border-radius: 30px;
-
-  margin: 8px 6px 0;
-
-  font-weight: bold;
-
-  font-family: inherit;
-
-  font-size: 14px;
-
-  border: none;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-
-}
-
-.map-button:hover,
-.calendar-button:hover,
-.share-button:hover {
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-
-}
-
-.calendar-button {
-
-  background:
-    linear-gradient(
-      135deg,
-      #f5d99b,
-      #d8aa58
-    );
-
-}
-
-.button-row {
-
-  display: flex;
-
-  justify-content: center;
-
-  flex-wrap: wrap;
-
-  gap: 6px;
-
-}
-
-
-/* =========================
-   COUNTDOWN
-========================= */
-
-.countdown-section {
-
-  padding: 80px 20px;
-
-  text-align: center;
-
-  background: var(--cream);
-
-  color: var(--maroon);
-
-}
-
-
-.countdown-section h3 {
-
-  color: var(--maroon);
-
-}
-
-
-.countdown {
-
-  display: flex;
-
-  justify-content: center;
-
-  gap: 12px;
-
-  flex-wrap: wrap;
-
-}
-
-
-.time-box {
-
-  width: 75px;
-
-  padding: 15px 8px;
-
-  background: white;
-
-  border-radius: 18px;
-
-  border:
-    1px solid
-    var(--gold);
-
-  box-shadow:
-    0 5px 20px rgba(0,0,0,0.08);
-
-}
-
-
-.time-box span {
-
-  display: block;
-
-  font-size: 28px;
-
-  font-weight: bold;
-
-  color: var(--maroon);
-
-}
-
-
-.time-box small {
-
-  font-size: 12px;
-
-}
-
-
-.countdown-arrived {
-
-  font-size: 20px;
-
-  font-weight: bold;
-
-  color: var(--maroon);
-
-}
-
-
-/* =========================
-   STORY
-========================= */
-
-.story {
-
-  background:
-    radial-gradient(
-      circle at center,
-      #75152f,
-      #30040e
-    );
-
-}
-
-
-.quote {
-
-  margin-top: 30px;
-
-  color: var(--light-gold);
-
-  font-size: 20px;
-
-  font-style: italic;
-
-}
-
-
-/* =========================
-   CONTACT
-========================= */
-
-.contact-section {
-
-  text-align: center;
-
-  padding: 80px 20px;
-
-  background: #21020a;
-
-}
-
-
-.contact-list {
-
-  display: flex;
-
-  justify-content: center;
-
-  flex-wrap: wrap;
-
-  gap: 12px;
-
-  margin: 25px 0;
-
-}
-
-
-.contact-list a {
-
-  color: var(--light-gold);
-
-  text-decoration: none;
-
-  border-bottom:
-    1px solid
-    var(--gold);
-
-  padding: 6px;
-
-}
-
-
-.whatsapp-button {
-
-  display: inline-block;
-
-  padding: 14px 25px;
-
-  border-radius: 40px;
-
-  background: #efe0bc;
-
-  color: #31050e;
-
-  text-decoration: none;
-
-  font-weight: bold;
-
-  margin: 6px;
-
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-
-  text-align: center;
-
-  padding: 50px 20px;
-
-  background: #170107;
-
-  color: var(--gold);
-
-}
-
-
-footer h4 {
-
-  font-size: 24px;
-
-  margin: 15px;
-
-}
-
-footer .family-line {
-
-  color: #cdaea0;
-
-  font-size: 13px;
-
-  margin-top: -8px;
-
-  margin-bottom: 15px;
-
-}
-
-
-/* =========================
-   TOAST
-========================= */
-
-.toast {
-
-  position: fixed;
-
-  left: 50%;
-
-  bottom: 30px;
-
-  transform: translate(-50%, 20px);
-
-  background: var(--light-gold);
-
-  color: #2a050d;
-
-  padding: 12px 22px;
-
-  border-radius: 30px;
-
-  font-weight: bold;
-
-  font-size: 14px;
-
-  opacity: 0;
-
-  transition: 0.35s ease;
-
-  z-index: 9999;
-
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-
-  pointer-events: none;
-
-}
-
-.toast.show {
-
-  opacity: 1;
-
-  transform: translate(-50%, 0);
-
-}
-
-
-/* =========================
-   ANIMATIONS
-========================= */
-
-@keyframes fadeDown {
-
-  from {
-
-    opacity: 0;
-
-    transform: translateY(-30px);
+    startAmbientPetals();
 
   }
 
-  to {
+});
 
+
+/* =========================
+   PETAL ANIMATION KEYFRAMES
+========================= */
+
+const injectedStyle = document.createElement("style");
+
+injectedStyle.innerHTML = `
+@keyframes fallPetal {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
     opacity: 1;
-
-    transform: translateY(0);
-
   }
-
-}
-
-
-@keyframes scaleIn {
-
-  from {
-
+  100% {
+    transform: translateY(110vh) rotate(360deg);
     opacity: 0;
-
-    transform: scale(0.7);
-
   }
+}
+`;
 
-  to {
+document.head.appendChild(injectedStyle);
 
-    opacity: 1;
 
-    transform: scale(1);
+/* =========================
+   ADD TO CALENDAR
+========================= */
 
-  }
+function buildGCalUrl(opts) {
+
+  const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
+
+  const params = new URLSearchParams({
+    text: opts.title,
+    dates: opts.start + "/" + opts.end,
+    details: opts.details,
+    location: opts.location,
+    ctz: "Asia/Kolkata"
+  });
+
+  return base + "&" + params.toString();
 
 }
 
+const venueText = "कृष्णा मैरिज हाउस, मुजुरी चौराहा, गोरखपुर";
 
-@keyframes heroAppear {
+const addHaldiCal = document.getElementById("addHaldiCal");
 
-  from {
+if (addHaldiCal) {
+  addHaldiCal.addEventListener("click", function (e) {
+    e.preventDefault();
+    const url = buildGCalUrl({
+      title: "हल्दी समारोह - मनीष ❤ प्रियंका",
+      details: "हल्दी समारोह में सादर आमंत्रित हैं।",
+      location: venueText,
+      start: "20261124",
+      end: "20261125"
+    });
+    window.open(url, "_blank");
+  });
+}
 
-    opacity: 0;
+const addWeddingCal = document.getElementById("addWeddingCal");
 
-    transform: scale(0.8);
-
-  }
-
-  to {
-
-    opacity: 1;
-
-    transform: scale(1);
-
-  }
-
+if (addWeddingCal) {
+  addWeddingCal.addEventListener("click", function (e) {
+    e.preventDefault();
+    const url = buildGCalUrl({
+      title: "विवाह समारोह - मनीष ❤ प्रियंका",
+      details: "विवाह समारोह में सादर आमंत्रित हैं।",
+      location: venueText,
+      start: "20261125T180000",
+      end: "20261125T220000"
+    });
+    window.open(url, "_blank");
+  });
 }
 
 
-@keyframes rotateDecoration {
+/* =========================
+   SHARE INVITATION
+========================= */
 
-  from {
+const shareBtn = document.getElementById("shareInvite");
 
-    transform: rotate(0deg);
+if (shareBtn) {
 
-  }
+  shareBtn.addEventListener("click", async function () {
 
-  to {
+    const shareData = {
+      title: "मनीष ❤ प्रियंका | शुभ विवाह",
+      text: "आपको मनीष और प्रियंका के विवाह समारोह में सादर आमंत्रित किया जाता है।",
+      url: window.location.href
+    };
 
-    transform: rotate(360deg);
+    if (navigator.share) {
 
-  }
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // user cancelled share sheet, nothing to do
+      }
+
+    } else {
+
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast("लिंक कॉपी हो गया 💌");
+      } catch (err) {
+        showToast(window.location.href);
+      }
+
+    }
+
+  });
 
 }
 
-@keyframes pulseGlow {
+function showToast(msg) {
 
-  0%, 100% {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerText = msg;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 0 rgba(216,170,88,0.45);
+  document.body.appendChild(toast);
 
-  }
+  setTimeout(function () {
+    toast.classList.add("show");
+  }, 10);
 
-  50% {
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 12px rgba(216,170,88,0);
-
-  }
-
-}
-
-@keyframes heartBeat {
-
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.15); }
-  40% { transform: scale(1); }
-  60% { transform: scale(1.1); }
+  setTimeout(function () {
+    toast.classList.remove("show");
+    setTimeout(function () {
+      toast.remove();
+    }, 400);
+  }, 2500);
 
 }
 
 
 /* =========================
-   MOBILE
+   PREVENT BROKEN COUNTDOWN ON RELOAD
 ========================= */
 
-@media (max-width: 600px) {
-
-  .section,
-  .event-section,
-  .contact-section {
-
-    padding-top: 65px;
-
-    padding-bottom: 65px;
-
-  }
-
-  .section h3,
-  .event-section h3,
-  .contact-section h3 {
-
-    font-size: 29px;
-
-  }
-
-  .event-card {
-
-    padding: 30px 20px;
-
-  }
-
-}
+window.addEventListener("load", function () {
+  updateCountdown();
+});
